@@ -1,19 +1,23 @@
-const { src, dest, series, watch } = require('gulp');
+import { src, dest, series, watch } from 'gulp';
+import include from 'gulp-file-include';
+import autoprefixer from 'gulp-autoprefixer';
+import concat from 'gulp-concat';
+import csso from 'gulp-csso';
+import htmlmin from 'gulp-htmlmin';
+import imagemin from 'gulp-imagemin';
+import uglify from 'gulp-uglify';
+import mode from 'gulp-mode';
+import gulpSass from 'gulp-sass';
+import dartSass from 'sass';
+import browserSync from 'browser-sync';
+import { deleteAsync } from 'del';
 
-const include         = require('gulp-file-include');
-const autoprefixer    = require('gulp-autoprefixer');
-const concat          = require('gulp-concat');
-const sass            = require('gulp-sass');
-const csso            = require('gulp-csso');
-const htmlmin         = require('gulp-htmlmin');
-const imagemin        = require('gulp-imagemin');
-const uglify          = require('gulp-uglify');
-const { production }  = require('gulp-mode')();
-const sync            = require('browser-sync').create();
-const del             = require('del');
+const { production }  = mode();
+const sync = browserSync.create();
+const sass = gulpSass(dartSass);
 
 const clear = () => {
-  return del('dist');
+  return deleteAsync('dist');
 };
 
 const scss = () => {
@@ -40,7 +44,7 @@ const js = () => {
 };
 
 const images = () => {
-  return src('src/images/**/*')
+  return src('src/images/**/*', { encoding: false })
     .pipe(production(imagemin()))
     .pipe(dest('dist/images'));
 };
@@ -58,8 +62,10 @@ const watching = () => {
   watch('src/**/*.html', series(html)).on('change', sync.reload);
   watch('src/scss/**/*.scss', series(scss)).on('change', sync.reload);
   watch('src/js/**/*.js', series(js)).on('change', sync.reload);
+  watch('src/images/**/*', series(images)).on('change', sync.reload);
+  watch('src/fonts/**/*', series(fonts)).on('change', sync.reload);
 };
 
-exports.clear = series(clear);
-exports.build = series(clear, scss, html, js, images, fonts);
-exports.default = series(clear, scss, html, js, images, fonts, watching);
+export const clean = series(clear);
+export const build = series(clear, scss, html, js, images, fonts);
+export default series(clear, scss, html, js, images, fonts, watching);

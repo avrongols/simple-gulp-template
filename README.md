@@ -8,11 +8,6 @@ A simple [gulp](http://gulpjs.com) template that provides:
 - Images minification.
 - [BrowserSync](http://browsersync.io) support.
 
-## Requirements
-
-- [Node.js](http://nodejs.org)
-- [Gulp.js](http://gulpjs.com)
-
 ## Quickstart
 
 Clone the repository and install local dependencies:
@@ -29,10 +24,10 @@ npm start
 
 Build development version without optimization and minification:
 ```
-npm run-script dev
+npm run dev
 ```
 
 Build production version with optimization and minification:
 ```
-npm run-script build
+npm run build
 ```
